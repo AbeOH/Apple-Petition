@@ -1,11 +1,15 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 
 // Handlebars Setup
 const { engine } = require("express-handlebars");
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 // End Set up
+
+// Destructing functions for signatures
+const { getAllSignatures, addSignature } = require("./db.js");
 
 app.use(express.static("./public"));
 // app.use(express.static("./projects"));
@@ -17,13 +21,13 @@ const petitionName = "Apple 30% Tax";
 
 // -- Express.static for static files
 // Do I need middleware to serve static files from a specific folder?
-// const staticMiddleware = express.static(path.join(__dirname, "projects"));
-// app.use(staticMiddleware);
+const staticMiddleware = express.static(path.join(__dirname, "projects"));
+app.use(staticMiddleware);
 //---------------------------------------------------------------------------------------------
 
 // -- Express.urleencoded for ready the body of POST request
-// const urlEncodedMiddleware = express.urlencoded({ extended: false });
-// app.use(urlEncodedMiddleware);
+const urlEncodedMiddleware = express.urlencoded({ extended: false });
+app.use(urlEncodedMiddleware);
 //---------------------------------------------------------------------------------------------
 
 // Create multplie routes for your express app;
@@ -49,6 +53,7 @@ app.get("/signers", (req, res) => {
     res.render("signers", {
         layout: "main",
         petitionName,
+        getAllSignatures,
     });
 });
 // ---- One route for rendering the thanks page with handlebars
@@ -58,6 +63,7 @@ app.get("/thanks", (req, res) => {
     res.render("thanks", {
         layout: "main",
         petitionName,
+        addSignature,
     });
 });
 // ---- One route for POSTing petition data -> Update DB accordingly
