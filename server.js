@@ -11,6 +11,7 @@ app.set("view engine", "handlebars");
 // Destructing functions for signatures
 const { getAllSignatures, addSignature } = require("./db.js");
 
+// Access to static pages
 app.use(express.static("./public"));
 // app.use(express.static("./projects"));
 
@@ -28,6 +29,18 @@ app.use(staticMiddleware);
 // -- Express.urleencoded for ready the body of POST request
 const urlEncodedMiddleware = express.urlencoded({ extended: false });
 app.use(urlEncodedMiddleware);
+//---------------------------------------------------------------------------------------------
+
+// Setting up cookies
+const cookieSession = require("cookie-session");
+
+app.use(
+    cookieSession({
+        secret: "Everyone loves Bananas",
+        maxAge: 1000 * 60 * 60 * 24 * 14,
+    })
+);
+
 //---------------------------------------------------------------------------------------------
 
 // Create multplie routes for your express app;
@@ -52,6 +65,9 @@ app.post("/petition", (req, res) => {
     const signatures = req.body.signatures;
     addSignature(firstName, lastName, signatures).then((result) => {
         console.log(result);
+        // const signatureId = result.rows[0].id;
+        req.session.signaturesId = result.rows[0].id;
+        // console.log("Cookies", result);
         res.redirect("/thanks");
     });
 });
@@ -71,10 +87,11 @@ app.get("/signers", (req, res) => {
 // -------- Make sure to get information about the number of signers
 // Set up handlebars for app THANKS
 app.get("/thanks", (req, res) => {
+    console.log(req.session);
     res.render("thanks", {
         layout: "main",
         petitionName,
-        addSignature, // Here or in the post request?
+        // addSignature, // Here or in the post request?
     });
 });
 

@@ -1,4 +1,4 @@
-// console.log("Hi");
+console.log("Hi");
 
 // // Setting ALL variables
 let isMouseDown = false;
@@ -6,6 +6,7 @@ const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
 canvas.addEventListener("mousedown", () => {
+    console.log("Mouse Down");
     mousedown(canvas, event);
 });
 
@@ -42,7 +43,7 @@ function mousemove(canvas, evt) {
     if (isMouseDown) {
         const currentPosition = getMousePos(canvas, evt);
         ctx.lineTo(currentPosition.x, currentPosition.y);
-        ctx.stroke;
+        ctx.stroke();
     }
 }
 

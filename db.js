@@ -18,6 +18,7 @@ module.exports.addSignature = (firstname, lastname, signature) => {
     return db.query(
         "INSERT INTO signatures (firstname, lastname, signature) VALUES($1, $2, $3) returning *",
         [firstname, lastname, signature]
+        // RETURNING id
     );
 };
 // Maybe cut

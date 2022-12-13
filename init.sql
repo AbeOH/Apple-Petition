@@ -19,10 +19,8 @@ INSERT INTO signatures(firstname, lastname) VALUES("Elon", "Musk");
 
 
 
-
-
 ---**********************************************************************************************
 
 -- Selecting signature From the table signatures
-SLECECT signature FROM signatures;
+SELECT firstname FROM signatures;
 
