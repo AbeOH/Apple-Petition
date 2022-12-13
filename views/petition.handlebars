@@ -1,1 +1,45 @@
 <h1>Welcome to the Petition Page against {{petitionName}}</h1>
+<p>
+    "Dear fellow Apple users and supporters of innovation, We are writing to ask
+    for your support in our campaign to reduce the unfair and excessive Apple
+    IOS tax on all purchases made on Apple devices. As you may know, Apple
+    currently charges a tax of 30% on all purchases made through its App Store,
+    which disproportionately affects small and independent developers who rely
+    on the App Store to distribute their products. This tax not only puts a
+    financial burden on developers, but it also stifles innovation and
+    competition within the industry. By imposing such a high tax, Apple
+    effectively maintains its monopoly position and hinders the growth of new
+    and innovative products. We believe that this tax is unfair and unjust, and
+    we call on Apple to reduce it to a fair and reasonable level. Join us in
+    signing this petition to send a message to Apple that we demand change.
+    Together, we can create a more equitable and innovative App Store ecosystem.
+    Thank you for your support."</p>
+
+<form action="/petition" method="POST" class="petitionForm">
+    <div class="petitionForm">
+        <label for="name">Enter your first name: </label>
+        <input type="text" name="firstname" required />
+    </div>
+    <div class="petitionForm">
+        <label for="name">Enter your last name: </label>
+        <input type="text" name="lastname" required />
+    </div>
+    {{! <div class="petitionForm">
+        <label for="email">Enter your email: </label>
+        <input type="text" name="email" required />
+    </div> }}
+    <div>
+        <input type="hidden" name="signatures" value="canvas.toDataURL()" />
+        <canvas style="" name="signature" width="400px" height="100px">
+        </canvas>
+    </div>
+    <div class="petitionForm">
+        <input type="submit" value="Sign Petiton" />
+    </div>
+    <script src="/canva.js"></script>
+</form>
+
+{{! <input type="text" id="firstname" name="firstname" />
+<input type="text" id="lastname" name="lastname" />
+<canvas> <input style="display: none;" name="signature" /> </canvas>
+<button class="submitButton">Submit</button> }}

@@ -14,7 +14,7 @@ const { getAllSignatures, addSignature } = require("./db.js");
 app.use(express.static("./public"));
 // app.use(express.static("./projects"));
 
-const petitionName = "Apple 30% Tax";
+const petitionName = "Apple 30% Death Tax";
 
 //---------------------------------------------------------------------------------------------
 // Apply dfferent middlewares;
@@ -33,11 +33,9 @@ app.use(urlEncodedMiddleware);
 // Create multplie routes for your express app;
 // Set up handlebars for app
 app.get("/", (req, res) => {
-    res.render("main", {
-        layout: "main",
-        petitionName,
-    });
+    res.redirect("/petition");
 });
+
 // ---- One route for rendering the petition page wind handlebars
 //Set up handlebars for app PETITION
 app.get("/petition", (req, res) => {
@@ -46,6 +44,18 @@ app.get("/petition", (req, res) => {
         petitionName,
     });
 });
+
+// Post request for Signing
+app.post("/petition", (req, res) => {
+    const firstName = req.body.firstname;
+    const lastName = req.body.lastname;
+    const signatures = req.body.signatures;
+    addSignature(firstName, lastName, signatures).then((result) => {
+        console.log(result);
+        res.redirect("/thanks");
+    });
+});
+
 // ---- One route for rendering the signers page with handlebars;
 // -------- Make sure to get all the signature data fromn the db before
 // Set up handlebars for app SIGNERS
@@ -53,9 +63,10 @@ app.get("/signers", (req, res) => {
     res.render("signers", {
         layout: "main",
         petitionName,
-        getAllSignatures,
+        getAllSignatures, // Here or in the post request?
     });
 });
+
 // ---- One route for rendering the thanks page with handlebars
 // -------- Make sure to get information about the number of signers
 // Set up handlebars for app THANKS
@@ -63,12 +74,16 @@ app.get("/thanks", (req, res) => {
     res.render("thanks", {
         layout: "main",
         petitionName,
-        addSignature,
+        addSignature, // Here or in the post request?
     });
 });
+
+// Post request for displat
+// app.post()
+
 // ---- One route for POSTing petition data -> Update DB accordingly
 
 // Server Listening
-app.listen(8080, () => {
-    console.log("Express server is running on localhost:8080");
+app.listen(8089, () => {
+    console.log("Express server is running on localhost:8089");
 });

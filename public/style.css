@@ -1,0 +1,39 @@
+body {
+    background-color: azure;
+}
+
+h1 {
+    font-size: 40px;
+    text-align: center;
+    background-color: whitesmoke;
+    font-family: "Times New Roman", Times, serif;
+}
+
+form.petitionForm {
+    display: table;
+}
+
+div.formPetition {
+    display: table-row;
+}
+
+label,
+input {
+    display: table-cell;
+    margin-bottom: 10px;
+}
+
+label {
+    padding-right: 10px;
+}
+
+canvas {
+    cursor: crosshair;
+    border: 1px solid black;
+    margin: 20px;
+}
+
+/* .submitButton {
+    background-color: aquamarine;
+    border: 1px;
+} */
