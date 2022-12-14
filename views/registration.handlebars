@@ -2,35 +2,36 @@
     <div class="error-message">{{errorMessage}}</div>
 {{/if}}
 
-<form action="/petition" method="POST" class="petitionForm">
+<form action="/registration" method="POST" class="petitionForm">
     <div class="petitionForm">
-        <label for="name">Enter your first name: </label>
+        <label id="name">Enter your first name: </label>
         <input type="text" name="firstname" required />
     </div>
     <div class="petitionForm">
-        <label for="name">Enter your last name: </label>
+        <label id="name">Enter your last name: </label>
         <input type="text" name="lastname" required />
     </div>
     <div class="petitionForm">
-        <label for="email">Enter your email: </label>
+        <label id="email">Enter your email: </label>
         <input type="text" name="email" required />
     </div>
     <div class="petitionForm">
-        <label for="password">Please select a password </label>
-        <input type="text" name="password" required />
+        <label id="password">Please select a password </label>
+        <input type="password" name="password" required />
     </div>
-    <div>
+    {{! <div>
         <input
             type="hidden"
             name="signatures"
             value="canvas.toDataURL()"
             required
         />
-    </div>
-    <div class="petitionForm">
+    </div> }}
+    <button>Register</button>
+    {{! <div class="petitionForm">
         <input type="submit" value="Sign Petiton" />
-    </div>
+    </div> }}
 </form>
-<canvas name="signature" width="400px" height="100px">
-</canvas>
+{{! <canvas name="signature" width="400px" height="100px">
+</canvas> }}
 <script src="/canva.js"></script>

@@ -19,6 +19,18 @@
 Add required for input signature}}
 
 {{! <input type="text" id="firstname" name="firstname" />
-<input type="text" id="lastname" name="lastname" />
-<canvas> <input style="display: none;" name="signature" /> </canvas>
-<button class="submitButton">Submit</button> }}
+<input type="text" id="lastname" name="lastname" /> }}
+<form action="/petition" method="POST" class="petitionForm">
+    <div>
+        <input
+            type="hidden"
+            name="signatures"
+            value="canvas.toDataURL()"
+            required
+        />
+        <canvas name="signature" width="400px" height="100px">
+        </canvas>
+    </div>
+    <button class="submitButton">Sign Petition</button>
+</form>
+<script src="/canva.js"></script>

@@ -9,7 +9,12 @@ app.set("view engine", "handlebars");
 // End Set up
 
 // Destructing functions for signatures
-const { getAllSignatures, addSignature } = require("./db.js");
+const {
+    registration,
+    getUserByEmail,
+    getAllSignatures,
+    addSignature,
+} = require("./db.js");
 // Importing functions from bcrpy.js
 const { hash, compare } = require("./bcrpt.js");
 
@@ -65,18 +70,17 @@ app.post("/registration", (req, res) => {
     const firstName = req.body.firstname;
     const lastName = req.body.lastname;
     const email = req.body.email;
-    const password = req.body.password.hash();
-    /// hashing password
+    const password = req.body.password; /// hashing password
     hash(password)
         .then((hash) => {
-            return addSignature(firstName, lastName, email, hash);
+            return registration(firstName, lastName, email, hash);
         })
         .then((result) => {
             console.log(result);
             // const signatureId = result.rows[0].id;
             req.session.signaturesId = result.rows[0].id;
-            // console.log("Cookies", result);
-            res.redirect("/signers");
+            // console.log("Body", req.body);
+            res.redirect("/petition");
         });
 });
 
@@ -91,20 +95,31 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    const userPass = db.query(
-        "SELECT password FROM users WHERE email = email",
-        [password].then(password) => {
-            compare(req.body.password,password); /// Password check
-            if(true){
-                req.session.signaturesId = result.rows[0].id; // Storing cookies
-                db.query("SELECT signature FROM signatures", [user_id].then(id) => // someting cookie)
-            // redirect to petition 
-    )}
-            // If not match return error & rerender log in 
-        }  
-    );
+    // console.log(req.body);
+    getUserByEmail(req.body.email).then((data) => {
+        console.log("Data1", data.rows[0].password);
+        console.log("Data2", req.body.password);
+        compare(data.rows[0].password, req.body.password).then(
+            console.log("true")
+        );
+    });
 });
 
+//         "SELECT password FROM users WHERE email = $1",
+//         [req.body.email].then(result) => {
+//             compare(result.rows[0].password, req.body.password); /// Password check
+//             if(true){
+//                 req.session.signaturesId = result.rows[0].id; // Storing cookies
+//                 db.query("SELECT signature FROM signatures WHERE user_id = $1", [req.body.user_id].then(id => // someting cookie)
+//                 res.redirect("/thanks"))
+//              if(false){
+//                 res.redirect("/petition"); // redirect to petition
+
+//              }
+//          )}
+//             // If not match return error & rerender log in
+//     );
+// });
 ///-------------------------------------------------------------------------------------------------------
 
 // ---- One route for rendering the petition page wind handlebars
@@ -118,13 +133,12 @@ app.get("/petition", (req, res) => {
 
 // Post request for Signing
 app.post("/petition", (req, res) => {
-    const firstName = req.body.firstname;
-    const lastName = req.body.lastname;
+    const user_id = req.session.signaturesId;
     const signatures = req.body.signatures;
-    addSignature(firstName, lastName, signatures).then((result) => {
-        console.log(result);
+    addSignature(signatures, user_id).then((result) => {
+        // console.log(result);
         // const signatureId = result.rows[0].id;
-        req.session.signaturesId = result.rows[0].id;
+        // req.session.signaturesId = result.rows[0].id;
         // console.log("Cookies", result);
         res.redirect("/thanks");
     });
