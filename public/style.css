@@ -33,6 +33,9 @@ canvas {
     margin: 20px;
 }
 
+.error-message {
+    background-color: red;
+}
 /* .submitButton {
     background-color: aquamarine;
     border: 1px;
