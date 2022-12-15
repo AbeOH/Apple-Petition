@@ -47,3 +47,12 @@ module.exports.checkSigned = (signature) => {
         signature,
     ]);
 };
+
+//----------------------------------------------------------------------------------------------------------------------------------
+
+module.exports.addInfo = (city, age, linkedIn) => {
+    return db.query(
+        "INSERT INTO users_profiles (city, age, linkedIn) VALUES($1, $2, $3)",
+        [city, age, linkedIn]
+    );
+};

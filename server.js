@@ -10,6 +10,7 @@ app.set("view engine", "handlebars");
 
 // Destructing functions for signatures
 const {
+    addInfo,
     registration,
     getUserByEmail,
     getAllSignatures,
@@ -96,13 +97,17 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
     // console.log(req.body);
-    getUserByEmail(req.body.email).then((data) => {
-        console.log("Data1", data.rows[0].password);
-        console.log("Data2", req.body.password);
-        compare(data.rows[0].password, req.body.password).then(
-            console.log("true")
-        );
-    });
+    // getUserByEmail(req.body.email).then((data) => {
+    //     console.log("Data1", data.rows[0].password);
+    //     console.log("Data2", req.body.password);
+    //     compare(data.rows[0].password, req.body.password).then((isMatch) => {
+    //         // console.log("true")
+    //         if(isMatch){
+    //             req.session.signaturesId = result.rows[0].id;
+    //             checkSigned()
+    //         }
+    //     })
+    // });
 });
 
 //         "SELECT password FROM users WHERE email = $1",
@@ -144,6 +149,8 @@ app.post("/petition", (req, res) => {
     });
 });
 
+///-------------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------------
 // ---- One route for rendering the signers page with handlebars;
 // -------- Make sure to get all the signature data fromn the db before
 // Set up handlebars for app SIGNERS
@@ -155,6 +162,8 @@ app.get("/signers", (req, res) => {
     });
 });
 
+///-------------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------------
 // ---- One route for rendering the thanks page with handlebars
 // -------- Make sure to get information about the number of signers
 // Set up handlebars for app THANKS
@@ -169,6 +178,26 @@ app.get("/thanks", (req, res) => {
 
 // Post request for displat
 // app.post()
+///-------------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------------
+app.get("/addInfo", (req, res) => {
+    res.render("addInfo", {
+        layout: "main",
+        petitionName,
+    });
+});
+
+app.post("/addInfo", (req, res) => {
+    const city = req.body.city;
+    const age = req.body.age;
+    const linkedIn = req.body.linkedIn;
+    console.log("City", city);
+    console.log("Age", age);
+    console.log("linkedIn");
+    addInfo(city, age, linkedIn).then((result) => {
+        res.redirect("/petition");
+    });
+});
 
 // ---- One route for POSTing petition data -> Update DB accordingly
 
