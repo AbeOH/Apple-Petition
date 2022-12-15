@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS signatures;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS signatures;
 DROP TABLE IF EXISTS users_profiles;
 
 

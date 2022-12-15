@@ -10,6 +10,8 @@ app.set("view engine", "handlebars");
 
 // Destructing functions for signatures
 const {
+    cityQuery,
+    profileJoin,
     addInfo,
     registration,
     getUserByEmail,
@@ -41,6 +43,7 @@ app.use(urlEncodedMiddleware);
 
 // Setting up cookies
 const cookieSession = require("cookie-session");
+const { get } = require("https");
 
 app.use(
     cookieSession({
@@ -150,35 +153,43 @@ app.post("/petition", (req, res) => {
 });
 
 ///-------------------------------------------------------------------------------------------------------
-///-------------------------------------------------------------------------------------------------------
-// ---- One route for rendering the signers page with handlebars;
-// -------- Make sure to get all the signature data fromn the db before
-// Set up handlebars for app SIGNERS
-app.get("/signers", (req, res) => {
-    res.render("signers", {
-        layout: "main",
-        petitionName,
-        getAllSignatures, // Here or in the post request?
-    });
-});
 
-///-------------------------------------------------------------------------------------------------------
 ///-------------------------------------------------------------------------------------------------------
 // ---- One route for rendering the thanks page with handlebars
 // -------- Make sure to get information about the number of signers
 // Set up handlebars for app THANKS
 app.get("/thanks", (req, res) => {
     // console.log(req.session);
-    res.render("thanks", {
-        layout: "main",
-        petitionName,
-        // addSignature, // Here or in the post request?
+    const user_id = req.body.user_id;
+    profileJoin(user_id).then((result) => {
+        res.render("thanks", {
+            layout: "main",
+            petitionName,
+            // Number of use who signed
+        });
     });
 });
 
 // Post request for displat
 // app.post()
 ///-------------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------------
+// ---- One route for rendering the signers page with handlebars;
+// -------- Make sure to get all the signature data fromn the db before
+// Set up handlebars for app SIGNERS
+app.get("/signers", (req, res) => {
+    getAllSignatures().then((result) => {
+        res.render("signers", {
+            layout: "main",
+            signers: result,
+            petitionName,
+        });
+    });
+});
+
+///-------------------------------------------------------------------------------------------------------
+
 ///-------------------------------------------------------------------------------------------------------
 app.get("/addInfo", (req, res) => {
     res.render("addInfo", {
@@ -191,16 +202,30 @@ app.post("/addInfo", (req, res) => {
     const city = req.body.city;
     const age = req.body.age;
     const linkedIn = req.body.linkedIn;
-    console.log("City", city);
-    console.log("Age", age);
-    console.log("linkedIn");
-    addInfo(city, age, linkedIn).then((result) => {
+    // const userId =  result.rows[0].id;
+    // req.session.signaturesId = true;
+    const userId = req.session.signaturesId;
+    addInfo(city, age, linkedIn, userId).then((result) => {
         res.redirect("/petition");
     });
 });
 
 // ---- One route for POSTing petition data -> Update DB accordingly
+///-------------------------------------------------------------------------------------------------------
+app.get("/cityInfo", (req, res) => {
+    cityQuery().then((result) => {
+        res.render("cityInfo", {
+            layout: "main",
+            cityInfo: result,
+            petitionName,
+        });
+    });
+});
 
+// app.post("/cityInfo", (req, res) => {
+
+// });
+///-------------------------------------------------------------------------------------------------------
 // Server Listening
 app.listen(8089, () => {
     console.log("Express server is running on localhost:8089");

@@ -1,1 +1,7 @@
-<h1>Please Sign here if you want to see real change {{petitionName}}</h1>
+{{#if errorMessage}}
+    <div class="error-message">{{errorMessage}}</div>
+{{/if}}
+
+{{#signers}}{{/signers}}
+
+<h1>Here are all our supporters {{petitionName}}</h1>
