@@ -55,13 +55,18 @@ app.use(
 //---------------------------------------------------------------------------------------------
 
 // Create multplie routes for your express app;
-// Set up handlebars for app
+// Set up handlebars for redirecting to registration page
 app.get("/", (req, res) => {
-    res.redirect("/petition");
+    res.redirect("/registration");
 });
 
+// // Later implement the redirect to log in while checking for cooky
+// app.get("/", (req, res) => {
+//     res.redirect("/login");
+// });
+
 ///-------------------------------------------------------------------------------------------------------
-/// Get and Post request for registration
+/// 1_0. Get and Post request for registration
 app.get("/registration", (req, res) => {
     res.render("registration", {
         layout: "main",
@@ -90,7 +95,7 @@ app.post("/registration", (req, res) => {
 
 ///-------------------------------------------------------------------------------------------------------
 ///-------------------------------------------------------------------------------------------------------
-/// Get and Post request for login
+/// 1_1. Get and Post request for login
 app.get("/login", (req, res) => {
     res.render("login", {
         layout: "main",
@@ -131,7 +136,7 @@ app.post("/login", (req, res) => {
 ///-------------------------------------------------------------------------------------------------------
 
 // ---- One route for rendering the petition page wind handlebars
-//Set up handlebars for app PETITION
+//2_0.Set up handlebars for app PETITION
 app.get("/petition", (req, res) => {
     res.render("petition", {
         layout: "main",
@@ -147,6 +152,7 @@ app.post("/petition", (req, res) => {
         // console.log(result);
         // const signatureId = result.rows[0].id;
         // req.session.signaturesId = result.rows[0].id;
+        //// Need to double check if I have to set the cookies here again or use the global cookies from registration
         // console.log("Cookies", result);
         res.redirect("/thanks");
     });
@@ -157,7 +163,7 @@ app.post("/petition", (req, res) => {
 ///-------------------------------------------------------------------------------------------------------
 // ---- One route for rendering the thanks page with handlebars
 // -------- Make sure to get information about the number of signers
-// Set up handlebars for app THANKS
+// 3_0. Set up handlebars for app THANKS
 app.get("/thanks", (req, res) => {
     // console.log(req.session);
     const user_id = req.body.user_id;
@@ -177,12 +183,13 @@ app.get("/thanks", (req, res) => {
 ///-------------------------------------------------------------------------------------------------------
 // ---- One route for rendering the signers page with handlebars;
 // -------- Make sure to get all the signature data fromn the db before
-// Set up handlebars for app SIGNERS
+// 4_0. Set up handlebars for app SIGNERS
 app.get("/signers", (req, res) => {
     getAllSignatures().then((result) => {
+        console.log(result);
         res.render("signers", {
             layout: "main",
-            signers: result,
+            signers: result.rows,
             petitionName,
         });
     });
@@ -191,6 +198,8 @@ app.get("/signers", (req, res) => {
 ///-------------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------------
+//2_1.Set up handlebars for app adding additioal profile information
+
 app.get("/addInfo", (req, res) => {
     res.render("addInfo", {
         layout: "main",
@@ -212,6 +221,8 @@ app.post("/addInfo", (req, res) => {
 
 // ---- One route for POSTing petition data -> Update DB accordingly
 ///-------------------------------------------------------------------------------------------------------
+//5_0.Set up handlebars for app city info display
+
 app.get("/cityInfo", (req, res) => {
     cityQuery().then((result) => {
         res.render("cityInfo", {

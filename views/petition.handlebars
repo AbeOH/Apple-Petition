@@ -2,6 +2,8 @@
     <div class="error-message">{{errorMessage}}</div>
 {{/if}}
 
+{{! If there are invalid values make sure to rerender the petition page with some
+extra information for the handdlebars view to show some error }}
 <h1>Welcome to the Petition Page against {{petitionName}}</h1>
 <p>
     "Dear fellow Apple users and supporters of innovation, We are writing to ask
@@ -19,11 +21,6 @@
     Together, we can create a more equitable and innovative App Store ecosystem.
     Thank you for your support."</p>
 
-{{! 
-Add required for input signature}}
-
-{{! <input type="text" id="firstname" name="firstname" />
-<input type="text" id="lastname" name="lastname" /> }}
 <form action="/petition" method="POST" class="petitionForm">
     <div>
         <input
@@ -38,3 +35,8 @@ Add required for input signature}}
     <button class="submitButton">Sign Petition</button>
 </form>
 <script src="/canva.js"></script>
+
+{{! Update the hidden <input> field value after some signing on the cnavas field with
+canvas.toDate(URL) to convert the image data to bas64 encoded string. This string should
+be set as value to the hidden <input> element. This string will later be send when 
+submitting the form }}

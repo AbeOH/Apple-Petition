@@ -66,8 +66,7 @@ module.exports.profileJoin = () => {
 //----------------------------------------------------------------------------------------------------------------------------------
 module.exports.cityQuery = () => {
     return db.query(
-        "SELECT * FROM users JOIN signatures ON users.id = signatures.user_id" 
-        "SELECT * FROM users LEFT OUTER JOIN users_profiles ON users.id = users_profiles.user_id"
+        "SELECT * FROM users JOIN signatures ON users.id = signatures.user_id LEFT OUTER JOIN users_profiles ON users.id = users_profiles.user_id"
 
     );
 };

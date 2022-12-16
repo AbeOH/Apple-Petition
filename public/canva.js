@@ -51,3 +51,7 @@ function mousemove(canvas, evt) {
 function mouseup() {
     isMouseDown = false;
 }
+
+/// Saving Image
+// The log in check
+// Then part 5
