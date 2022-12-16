@@ -9,6 +9,42 @@ h1 {
     font-family: "Times New Roman", Times, serif;
 }
 
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: rgb(46, 45, 45);
+    color: rgb(226, 226, 226);
+    z-index: 99;
+    display: flex;
+    align-items: center;
+}
+
+.topbar ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+}
+
+.topbar li {
+    flex: 1;
+}
+
+.topbar a {
+    display: block;
+    padding: 16px;
+    text-decoration: none;
+    color: aliceblue;
+}
+
+.video {
+    display: flex;
+    align-items: center;
+}
+
 form.petitionForm {
     display: table;
 }
@@ -36,7 +72,3 @@ canvas {
 .error-message {
     background-color: red;
 }
-/* .submitButton {
-    background-color: aquamarine;
-    border: 1px;
-} */

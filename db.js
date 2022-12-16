@@ -9,7 +9,7 @@ const db = spicedPg(
 // Create the following functions;
 // ----- getAllSignatures - use db.query to get all signatures from table signatures
 
-module.exports.getAllSignatures = () => {
+module.exports.getAllSignatures = (user_id) => {
     return db.query("SELECT signature FROM signatures");
 };
 
@@ -67,6 +67,5 @@ module.exports.profileJoin = () => {
 module.exports.cityQuery = () => {
     return db.query(
         "SELECT * FROM users JOIN signatures ON users.id = signatures.user_id LEFT OUTER JOIN users_profiles ON users.id = users_profiles.user_id"
-
     );
 };

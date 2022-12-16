@@ -57,8 +57,18 @@ app.use(
 // Create multplie routes for your express app;
 // Set up handlebars for redirecting to registration page
 app.get("/", (req, res) => {
-    res.redirect("/registration");
+    res.redirect("landing");
 });
+
+//---------------------------------------------------------------------------------------------
+app.get("/landing", (req, res) => {
+    res.render("landing", {
+        layout: "main",
+        petitionName,
+    });
+});
+
+//---------------------------------------------------------------------------------------------
 
 // // Later implement the redirect to log in while checking for cooky
 // app.get("/", (req, res) => {
@@ -149,10 +159,9 @@ app.post("/petition", (req, res) => {
     const user_id = req.session.signaturesId;
     const signatures = req.body.signatures;
     addSignature(signatures, user_id).then((result) => {
-        // console.log(result);
+        // console.log("Row", result.rows[0].id);
         // const signatureId = result.rows[0].id;
-        // req.session.signaturesId = result.rows[0].id;
-        //// Need to double check if I have to set the cookies here again or use the global cookies from registration
+        req.session.signaturesId = result.rows[0].id;
         // console.log("Cookies", result);
         res.redirect("/thanks");
     });
@@ -186,7 +195,8 @@ app.get("/thanks", (req, res) => {
 // 4_0. Set up handlebars for app SIGNERS
 app.get("/signers", (req, res) => {
     getAllSignatures().then((result) => {
-        console.log(result);
+        console.log("ALL", result);
+        console.log("Signes", result.rows);
         res.render("signers", {
             layout: "main",
             signers: result.rows,

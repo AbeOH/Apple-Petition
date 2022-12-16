@@ -2,9 +2,15 @@
     <div class="error-message">{{errorMessage}}</div>
 {{/if}}
 
-{{#signers}}{{/signers}}
+{{#signers}}
+{{.}}
+{{/signers}}
 
 <h1>Here are all our supporters {{petitionName}}</h1>
+
+<img src="signers" alt="" />
+
+{{! NEEED to figure out to render the image from my table to the the html }}
 
 {{! You will to implement some logic how to retrive the number in your express app from 
 the DB right before you call res.render for the according route
