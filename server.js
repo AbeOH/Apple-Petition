@@ -114,18 +114,25 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    // console.log(req.body);
-    // getUserByEmail(req.body.email).then((data) => {
-    //     console.log("Data1", data.rows[0].password);
-    //     console.log("Data2", req.body.password);
-    //     compare(data.rows[0].password, req.body.password).then((isMatch) => {
-    //         // console.log("true")
-    //         if(isMatch){
-    //             req.session.signaturesId = result.rows[0].id;
-    //             checkSigned()
-    //         }
-    //     })
-    // });
+    console.log(req.body);
+    getUserByEmail(req.body.email).then((data) => {
+        console.log("Data1", data.rows[0].password);
+        // console.log("Data2", req.body.password);
+        // bcryptauch;
+        compare(req.body.password, data.rows[0].password).then((isMatch) => {
+            console.log("Table Password: ", data.rows[0].password);
+            console.log("Typed Password: ", req.body.password);
+            console.log(isMatch);
+            if (isMatch === true) {
+                // req.session.signaturesId = result.rows[0].id;
+                // console.log(req.session.signaturesId);
+                console.log("Pass");
+                // checkSigned()
+            } else {
+                console.log("FAlLSE");
+            }
+        });
+    });
 });
 
 //         "SELECT password FROM users WHERE email = $1",

@@ -53,5 +53,7 @@ function mouseup() {
 }
 
 /// Saving Image
+// toDataURL()---- Creating event listner to the event of button submit
+// and then pass the information of toDataUrl into hidden element
 // The log in check
 // Then part 5
