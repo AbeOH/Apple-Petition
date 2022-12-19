@@ -1,0 +1,38 @@
+{{#if errorMessage}}
+    <div class="error-message">{{errorMessage}}</div>
+{{/if}}
+
+<form action="/editPage" method="POST" class="petitionForm">
+
+ <div class="petitionForm">
+        <label id="name">Change first name </label>
+        <input type="text" name="firstname" required />
+    </div>
+    <div class="petitionForm">
+        <label id="name">Change last name </label>
+        <input type="text" name="lastname" required />
+    </div>
+    <div class="petitionForm">
+        <label id="email">Change email </label>
+        <input type="text" name="email" required />
+    </div>
+    <div class="petitionForm">
+        <label id="password">Change password </label>
+        <input type="password" name="password" required />
+    </div>
+
+    <div class="petitionForm">
+        <label id="city"Change city </label>
+        <input type="text" name="city" />
+    </div>
+    <div class="petitionForm">
+        <label id="age">Change age </label>
+        <input type="text" name="age" />
+    </div>
+    <div class="petitionForm">
+        <label id="linkedIn">Change linkIn</label>
+        <input type="text" name="linkedIn" />
+    </div>
+    <button>Submit</button>
+
+</form>

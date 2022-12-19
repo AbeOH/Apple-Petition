@@ -26,13 +26,8 @@ extra information for the handdlebars view to show some error }}
 
 <form action="/petition" method="POST" class="petitionForm">
     <div>
-        <input
-            type="hidden"
-            name="signatures"
-            value="canvas.toDataURL()"
-            required
-        />
-        <canvas name="signature" width="400px" height="100px">
+        <input class="signs" type="hidden" name="signatures" required />
+        <canvas width="400px" height="100px">
         </canvas>
     </div>
     <button class="submitButton">Sign Petition</button>

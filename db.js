@@ -26,16 +26,24 @@ module.exports.registration = (firstname, lastname, email, password) => {
 //----------------------------------------------------------------------------------------------------------------------------------
 
 module.exports.getUserByEmail = (email) => {
-    return db.query("SELECT password FROM users WHERE email = $1", [email]);
+    return db.query(
+        "SELECT users.password, users.id FROM users FULL OUTER JOIN signatures ON users.id = signatures.id WHERE email = $1 ",
+        [email]
+    );
 };
+
+//  return db.query("SELECT users.password, users.id  FROM users WHERE email = $1 ON sog  ", [email]);
+
+// "SELECT * FROM users JOIN signatures ON users.id = signatures.user_id LEFT OUTER JOIN users_profiles ON users.id = users_profiles.user_id"
+// Create full outerjoin with signature table the id from user table= signature table
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
-module.exports.checkSigned = (signature) => {
-    return db.query("SELECT signature FROM signatures WHERE signature = $1", [
-        signature,
-    ]);
-};
+// module.exports.checkSigned = (user_id) => {
+//     return db.query("SELECT signature FROM signatures WHERE user_id = $1", [
+//         user_id,
+//     ]);
+// };
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
@@ -45,6 +53,8 @@ module.exports.addInfo = (city, age, linkedIn, user_id) => {
         [city, age, linkedIn, user_id]
     );
 };
+
+//----------------------------------------------------------------------------------------------------------------------------------
 
 // ----- addSignature - use db.query to insert a signature to table signatures
 module.exports.addSignature = (signature, user_id) => {
@@ -69,3 +79,13 @@ module.exports.cityQuery = () => {
         "SELECT * FROM users JOIN signatures ON users.id = signatures.user_id LEFT OUTER JOIN users_profiles ON users.id = users_profiles.user_id"
     );
 };
+
+//----------------------------------------------------------------------------------------------------------------------------------
+
+module.exports.deleteSignature = () => {};
+
+//----------------------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------------------

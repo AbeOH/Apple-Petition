@@ -4,6 +4,8 @@ console.log("Hi");
 let isMouseDown = false;
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+// const submit = document.querySelector("signs");
+const hiddenInput = document.querySelector(".signs");
 
 canvas.addEventListener("mousedown", () => {
     console.log("Mouse Down");
@@ -15,6 +17,10 @@ canvas.addEventListener("mousemove", () => {
 });
 
 canvas.addEventListener("mouseup", mouseup);
+
+// canvas.addEventListener("submitButton", () => {
+//     console.log("Submit");
+// });
 
 // // Need to add event listner for mouseleave
 // canvas.addEventListener("mouseleave", mouseleave);
@@ -50,10 +56,12 @@ function mousemove(canvas, evt) {
 // // Mouse Up
 function mouseup() {
     isMouseDown = false;
+    // console.log("Hi");
+    // console.log(canvas.toDataURL());
+    hiddenInput.value = canvas.toDataURL();
+    console.log(hiddenInput.value);
 }
 
-/// Saving Image
-// toDataURL()---- Creating event listner to the event of button submit
-// and then pass the information of toDataUrl into hidden element
-// The log in check
 // Then part 5
+//// --- Edit Profiles
+/// Middleware for checking cooking and logging conditions

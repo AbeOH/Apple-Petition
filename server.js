@@ -113,43 +113,36 @@ app.get("/login", (req, res) => {
     });
 });
 
+/// Change quers
 app.post("/login", (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     getUserByEmail(req.body.email).then((data) => {
-        console.log("Data1", data.rows[0].password);
-        // console.log("Data2", req.body.password);
-        // bcryptauch;
+        // console.log("Data1", data.rows[0].password);
+        console.log("Data2", req.body.password);
         compare(req.body.password, data.rows[0].password).then((isMatch) => {
             console.log("Table Password: ", data.rows[0].password);
-            console.log("Typed Password: ", req.body.password);
-            console.log(isMatch);
+            // console.log("Typed Password: ", req.body.password);
+            console.log("Check", isMatch);
             if (isMatch === true) {
-                // req.session.signaturesId = result.rows[0].id;
-                // console.log(req.session.signaturesId);
+                req.session.userId = data.rows[0].id;
+                // console.log("id", data.rows[0].id);
+                // console.log("Req", req.session.signaturesId);
                 console.log("Pass");
-                // checkSigned()
+                if (req.session.signaturesId) {
+                    req.session.signaturesId = data.rows[0].id;
+                    res.redirect("/thanks");
+                } else {
+                    res.redirect("/petition");
+                }
             } else {
-                console.log("FAlLSE");
+                res.render("login", {
+                    layout: "main",
+                });
             }
         });
     });
 });
 
-//         "SELECT password FROM users WHERE email = $1",
-//         [req.body.email].then(result) => {
-//             compare(result.rows[0].password, req.body.password); /// Password check
-//             if(true){
-//                 req.session.signaturesId = result.rows[0].id; // Storing cookies
-//                 db.query("SELECT signature FROM signatures WHERE user_id = $1", [req.body.user_id].then(id => // someting cookie)
-//                 res.redirect("/thanks"))
-//              if(false){
-//                 res.redirect("/petition"); // redirect to petition
-
-//              }
-//          )}
-//             // If not match return error & rerender log in
-//     );
-// });
 ///-------------------------------------------------------------------------------------------------------
 
 // ---- One route for rendering the petition page wind handlebars
@@ -165,6 +158,7 @@ app.get("/petition", (req, res) => {
 app.post("/petition", (req, res) => {
     const user_id = req.session.signaturesId;
     const signatures = req.body.signatures;
+    console.log("Siganture", req.body);
     addSignature(signatures, user_id).then((result) => {
         // console.log("Row", result.rows[0].id);
         // const signatureId = result.rows[0].id;
@@ -202,7 +196,7 @@ app.get("/thanks", (req, res) => {
 // 4_0. Set up handlebars for app SIGNERS
 app.get("/signers", (req, res) => {
     getAllSignatures().then((result) => {
-        console.log("ALL", result);
+        // console.log("ALL", result);
         console.log("Signes", result.rows);
         res.render("signers", {
             layout: "main",
@@ -254,6 +248,19 @@ app.get("/cityInfo", (req, res) => {
 
 // });
 ///-------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+// 6.0 Edit profil
+
+app.get("/editPage", (req, res) => {
+    res.render("editPage", {
+        layout: "main",
+    });
+});
+
+app.post("editPage", (req, res) => {});
+
+//---------------------------------------------------------------------------------------------
+
 // Server Listening
 app.listen(8089, () => {
     console.log("Express server is running on localhost:8089");
