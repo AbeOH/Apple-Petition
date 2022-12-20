@@ -8,16 +8,6 @@ app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 // End Set up
 
-// Middleware
-// Check if ueser-id is set & pages that not log in or register; redirect to register
-// second middleware; if go on register or sign up
-// Destructing functions for signatures
-// Middleware
-
-/// 1 middlewares for (user_id exist & register or log in) then redirect
-///  2 middle ware if no user_id is set/other then register log in redirect
-/// 3 middleware go on petition if signed cookies exist then redirect of thanks if no cookie then redirect to thanks
-
 const {
     allQuery,
     allUsers,
@@ -38,6 +28,8 @@ const {
 // Importing functions from bcrpy.js
 const { hash, compare } = require("./bcrpt.js");
 
+// Access to views
+app.use(express.static("./views"));
 // Access to static pages
 app.use(express.static("./public"));
 
@@ -45,11 +37,9 @@ app.use(express.static("./public"));
 const {
     requireLoggedInUser,
     requireLoggedOutUser,
+    requireNoSignature,
     requireSignature,
 } = require("./middleware");
-
-app.use(requireLoggedInUser);
-app.use(requireLoggedOutUser);
 
 const petitionName = "Apple 30% Death Tax";
 
@@ -80,6 +70,10 @@ app.use(
     })
 );
 
+// Middleware
+// app.use(requireLoggedInUser);
+// app.use(requireLoggedOutUser);
+
 //---------------------------------------------------------------------------------------------
 
 // Create multplie routes for your express app;
@@ -105,7 +99,10 @@ app.get("/landing", (req, res) => {
 
 ///-------------------------------------------------------------------------------------------------------
 /// 1_0. Get and Post request for registration
-app.get("/registration", (req, res) => {
+app.get("/registration", requireLoggedOutUser, (req, res) => {
+    if (req.session.userId) {
+        return res.redirect("/thanks");
+    }
     res.render("registration", {
         layout: "main",
         petitionName,
@@ -113,9 +110,7 @@ app.get("/registration", (req, res) => {
     // res.redirect("/petition");
 });
 
-////// !!!!! Add if statment to check if user is logged in !!!!!!! \\\\\\
-
-app.post("/registration", (req, res) => {
+app.post("/registration", requireLoggedOutUser, (req, res) => {
     const firstName = req.body.firstname;
     const lastName = req.body.lastname;
     const email = req.body.email;
@@ -138,7 +133,7 @@ app.post("/registration", (req, res) => {
 ///-------------------------------------------------------------------------------------------------------
 ///-------------------------------------------------------------------------------------------------------
 /// 1_1. Get and Post request for login
-app.get("/login", (req, res) => {
+app.get("/login", requireLoggedOutUser, (req, res) => {
     res.render("login", {
         layout: "main",
         petitionName,
@@ -146,7 +141,7 @@ app.get("/login", (req, res) => {
 });
 
 /// Change quers
-app.post("/login", (req, res) => {
+app.post("/login", requireLoggedOutUser, (req, res) => {
     // console.log(req.body);
     getUserByEmail(req.body.email).then((data) => {
         // console.log("Data1", data.rows[0].password);
@@ -182,7 +177,7 @@ app.post("/login", (req, res) => {
 
 // ---- One route for rendering the petition page wind handlebars
 //2_0.Set up handlebars for app PETITION
-app.get("/petition", (req, res) => {
+app.get("/petition", requireNoSignature, (req, res) => {
     res.render("petition", {
         layout: "main",
         petitionName,
@@ -192,7 +187,7 @@ app.get("/petition", (req, res) => {
 ////// !!!!! Add if statment to check if user is logged in !!!!!!! \\\\\\
 
 // Post request for Signing
-app.post("/petition", (req, res) => {
+app.post("/petition", requireNoSignature, (req, res) => {
     // const user_id = req.session.signaturesId;
     const user_id = req.session.userId;
     const signatures = req.body.signatures;
@@ -212,7 +207,7 @@ app.post("/petition", (req, res) => {
 // ---- One route for rendering the thanks page with handlebars
 // -------- Make sure to get information about the number of signers
 // 3_0. Set up handlebars for app THANKS
-app.get("/thanks", requireSignature, (req, res) => {
+app.get("/thanks", requireLoggedInUser, requireSignature, (req, res) => {
     // console.log(req.session);
     // const user_id = req.body.userId;
     const user_id = req.session.userId;
@@ -241,7 +236,7 @@ app.get("/thanks", requireSignature, (req, res) => {
 // ---- One route for rendering the signers page with handlebars;
 // -------- Make sure to get all the signature data fromn the db before
 // 4_0. Set up handlebars for app SIGNERS
-app.get("/signers", (req, res) => {
+app.get("/signers", requireLoggedInUser, requireSignature, (req, res) => {
     allQuery().then((info) => {
         // console.log("Info", info);
         // console.log("Info", info.rows[0]);
@@ -261,7 +256,7 @@ app.get("/signers", (req, res) => {
     });
 });
 
-app.get("/signers/:city", (req, res) => {
+app.get("/signers/:city", requireLoggedInUser, (req, res) => {
     const city = req.params.city;
     // console.log("data", req.params.cityInfo);
     cityQuery(city).then((info) => {
@@ -313,14 +308,14 @@ app.get("/signers/:city", (req, res) => {
 ///-------------------------------------------------------------------------------------------------------
 //2_1.Set up handlebars for app adding additioal profile information
 
-app.get("/addInfo", (req, res) => {
+app.get("/addInfo", requireLoggedInUser, (req, res) => {
     res.render("addInfo", {
         layout: "main",
         petitionName,
     });
 });
 
-app.post("/addInfo", (req, res) => {
+app.post("/addInfo", requireLoggedInUser, (req, res) => {
     const city = req.body.city;
     const age = req.body.age;
     const linkedIn = req.body.linkedIn;
@@ -342,7 +337,7 @@ app.post("/addInfo", (req, res) => {
 //---------------------------------------------------------------------------------------------
 // 6.0 Edit profil
 
-app.get("/editPage", (req, res) => {
+app.get("/editPage", requireLoggedInUser, (req, res) => {
     allInfos(req.session.userId).then((data) => {
         // console.log("Data from user", req.session.firstName)
 
@@ -355,7 +350,7 @@ app.get("/editPage", (req, res) => {
     });
 });
 
-app.post("/editPage", (req, res) => {
+app.post("/editPage", requireLoggedInUser, (req, res) => {
     const user_id = req.session.userId;
     const { firstname, lastname, email, city, age, linkedIn } = req.body;
     console.log(req.body);
