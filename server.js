@@ -8,8 +8,12 @@ app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 // End Set up
 
+// Middleware
+// Check if ueser-id is set & pages that not log in or register; redirect to register
+// second middleware; if go on register or sign up
 // Destructing functions for signatures
 const {
+    allInfos,
     cityQuery,
     profileJoin,
     addInfo,
@@ -44,6 +48,7 @@ app.use(urlEncodedMiddleware);
 // Setting up cookies
 const cookieSession = require("cookie-session");
 const { get } = require("https");
+const { runInNewContext } = require("vm");
 
 app.use(
     cookieSession({
@@ -85,6 +90,8 @@ app.get("/registration", (req, res) => {
     // res.redirect("/petition");
 });
 
+////// !!!!! Add if statment to check if user is logged in !!!!!!! \\\\\\
+
 app.post("/registration", (req, res) => {
     const firstName = req.body.firstname;
     const lastName = req.body.lastname;
@@ -95,10 +102,12 @@ app.post("/registration", (req, res) => {
             return registration(firstName, lastName, email, hash);
         })
         .then((result) => {
-            console.log(result);
+            // console.log(result);
             // const signatureId = result.rows[0].id;
-            req.session.signaturesId = result.rows[0].id;
+            /////////////////// req.session.signaturesId = result.rows[0].id; //// Wrong Cookie set!!!
             // console.log("Body", req.body);
+            req.session.userId = result.rows[0].id;
+            console.log(req.session.userId);
             res.redirect("/petition");
         });
 });
@@ -118,18 +127,21 @@ app.post("/login", (req, res) => {
     // console.log(req.body);
     getUserByEmail(req.body.email).then((data) => {
         // console.log("Data1", data.rows[0].password);
-        console.log("Data2", req.body.password);
+        // console.log("Data2", req.body.password);
         compare(req.body.password, data.rows[0].password).then((isMatch) => {
             console.log("Table Password: ", data.rows[0].password);
             // console.log("Typed Password: ", req.body.password);
             console.log("Check", isMatch);
             if (isMatch === true) {
                 req.session.userId = data.rows[0].id;
+                console.log(req.session.userId);
+
                 // console.log("id", data.rows[0].id);
                 // console.log("Req", req.session.signaturesId);
                 console.log("Pass");
-                if (req.session.signaturesId) {
-                    req.session.signaturesId = data.rows[0].id;
+                if (data.rows[0].signature) {
+                    req.session.signed = true;
+                    // req.session.signaturesId = data.rows[0].id;
                     res.redirect("/thanks");
                 } else {
                     res.redirect("/petition");
@@ -139,8 +151,8 @@ app.post("/login", (req, res) => {
                     layout: "main",
                 });
             }
-        });
-    });
+        }); /// catch error for password
+    }); // catch error for email
 });
 
 ///-------------------------------------------------------------------------------------------------------
@@ -154,9 +166,12 @@ app.get("/petition", (req, res) => {
     });
 });
 
+////// !!!!! Add if statment to check if user is logged in !!!!!!! \\\\\\
+
 // Post request for Signing
 app.post("/petition", (req, res) => {
-    const user_id = req.session.signaturesId;
+    // const user_id = req.session.signaturesId;
+    const user_id = req.session.userId;
     const signatures = req.body.signatures;
     console.log("Siganture", req.body);
     addSignature(signatures, user_id).then((result) => {
@@ -176,7 +191,7 @@ app.post("/petition", (req, res) => {
 // 3_0. Set up handlebars for app THANKS
 app.get("/thanks", (req, res) => {
     // console.log(req.session);
-    const user_id = req.body.user_id;
+    const user_id = req.body.userId;
     profileJoin(user_id).then((result) => {
         res.render("thanks", {
             layout: "main",
@@ -224,7 +239,7 @@ app.post("/addInfo", (req, res) => {
     const linkedIn = req.body.linkedIn;
     // const userId =  result.rows[0].id;
     // req.session.signaturesId = true;
-    const userId = req.session.signaturesId;
+    const userId = req.session.userId;
     addInfo(city, age, linkedIn, userId).then((result) => {
         res.redirect("/petition");
     });
@@ -252,10 +267,26 @@ app.get("/cityInfo", (req, res) => {
 // 6.0 Edit profil
 
 app.get("/editPage", (req, res) => {
-    res.render("editPage", {
-        layout: "main",
+    allInfos(req.session.userId).then((data) => {
+        console.log(req.session);
+        res.render("editPage", {
+            layout: "main",
+            user: data.rows[0],
+            // Adding prefedined values
+        });
     });
 });
+
+//   req.session.currentUser = {
+//       id: req.body.id,
+//       firstname: req.body.firstName,
+//       lastname: req.body.lastName,
+//       email: req.body.email,
+//       password: req.body.password,
+//       city: req.body.city,
+//       age: req.body.age,
+//       linkedIn: req.body.linkedIn,
+//   };
 
 app.post("editPage", (req, res) => {});
 

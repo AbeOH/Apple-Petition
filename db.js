@@ -79,13 +79,38 @@ module.exports.cityQuery = () => {
         "SELECT * FROM users JOIN signatures ON users.id = signatures.user_id LEFT OUTER JOIN users_profiles ON users.id = users_profiles.user_id"
     );
 };
+// Doubel check this query
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
-module.exports.deleteSignature = () => {};
+// Getting all relevant values from db
+//----------------------------------------------------------------------------------------------------------------------------------
+
+module.exports.allInfos = (user_id) => {
+    return db.query(
+        "SELECT * FROM users LEFT OUTER JOIN users_profiles ON users.id = users_profiles.user_id WHERE users.id = $1 ",
+        [user_id]
+    );
+};
+//----------------------------------------------------------------------------------------------------------------------------------
+// module.exports.deleteSignature = () => {};
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
+module.exports.getUserById = () => {};
+
 //----------------------------------------------------------------------------------------------------------------------------------
+
+module.exports.updateUser = () => {};
+
+//----------------------------------------------------------------------------------------------------------------------------------
+
+// module.export.passwordCheck = () => {
+//     return db.query("UPDATE password FROM users ");
+// };
+
+// module.exports.inserOrUpdateUserProfile = () => {
+//     return db.query("INSERT");
+// };
 
 //----------------------------------------------------------------------------------------------------------------------------------
