@@ -2,9 +2,17 @@
     <div class="error-message">{{errorMessage}}</div>
 {{/if}}
 
-<h1>Thank you for Signing this petition!{{petitionName}}</h1>
+<div class="thanks">
+    <h1>Thank you for Signing this petition!{{petitionName}}</h1>
 
-<a href="/signers"> Check out who alreay signed the petition </a>
+    <a class="Signers" href="/signers">
+        Check out who alreay signed the petition
+    </a>
+
+    <img src={{signature}} alt="" />
+
+    <h2>This the number of peopled who support us {{count}} </h2>
+</div>
 
 {{! 1.Implement number of users later.2. Insert Thank you text.  }}
 
