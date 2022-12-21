@@ -2,7 +2,8 @@ require("dotenv").config();
 const { SQL_USER, SQL_PASSWORD } = process.env;
 const spicedPg = require("spiced-pg");
 const db = spicedPg(
-    `postgres:${SQL_USER}:${SQL_PASSWORD}@localhost:5432/petition`
+    process.env.DATABASE_URL ||
+        `postgres:${SQL_USER}:${SQL_PASSWORD}@localhost:5432/petition`
 );
 //`postgres:${SQL_USER}:${SQL_PASSWORD}@localhost:5432/petiton`
 /// Maybe render issue; create one variable that includes both in the env file
@@ -82,6 +83,11 @@ module.exports.getSigCount = () => {
 
 module.exports.getSupportCount = () => {
     return db.query("SELECT count(*) FROM users");
+};
+
+/// Delete Signature
+module.exports.deleteSig = (userId) => {
+    return db.query("DELETE FROM signatures WHERE user_id =$1", [userId]);
 };
 
 //----------------------------------------------------------------------------------------------------------------------------------

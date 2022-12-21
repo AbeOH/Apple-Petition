@@ -15,6 +15,7 @@ const {
     getSigCount,
     getSignatures,
     updateUserProfil,
+    deleteSig,
     editUser,
     allInfos,
     cityQuery,
@@ -100,6 +101,7 @@ app.get("/landing", (req, res) => {
 ///-------------------------------------------------------------------------------------------------------
 /// 1_0. Get and Post request for registration
 app.get("/registration", requireLoggedOutUser, (req, res) => {
+    console.log("Curent User Id", req.session.userId);
     if (req.session.userId) {
         return res.redirect("/thanks");
     }
@@ -178,6 +180,9 @@ app.post("/login", requireLoggedOutUser, (req, res) => {
 // ---- One route for rendering the petition page wind handlebars
 //2_0.Set up handlebars for app PETITION
 app.get("/petition", requireNoSignature, (req, res) => {
+    // req.session.userId = null;
+    console.log("Curent User Id", req.session.userId);
+
     res.render("petition", {
         layout: "main",
         petitionName,
@@ -195,38 +200,52 @@ app.post("/petition", requireNoSignature, (req, res) => {
     addSignature(signatures, user_id).then((result) => {
         // console.log("Row", result.rows[0].id);
         // const signatureId = result.rows[0].id;
-        req.session.signaturesId = result.rows[0].id; ///// Check if signaturesId is needed or rather user_id
+        // req.session.userId = result.rows[0].id;
+        console.log(req.session.signaturesId);
+        req.session.signaturesId = true;
+        console.log(req.session.userId);
+
         // console.log("Cookies", result);
         res.redirect("/thanks");
     });
 });
-
+// Another post request for deletion
+app.post("/delete", (req, res) => {
+    deleteSig(req.session.userId).then((info) => {
+        req.session.signaturesId = false;
+        res.redirect("/thanks");
+    });
+});
 ///-------------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------------
 // ---- One route for rendering the thanks page with handlebars
 // -------- Make sure to get information about the number of signers
 // 3_0. Set up handlebars for app THANKS
-app.get("/thanks", requireLoggedInUser, requireSignature, (req, res) => {
-    // console.log(req.session);
-    // const user_id = req.body.userId;
-    const user_id = req.session.userId;
-    console.log("User", user_id);
-    getSigCount().then((count) => {
-        console.log("count", count.rows[0]);
-        getSignatures(user_id).then((sig) => {
-            // console.log("Rows", sig.rows[0].signature);
-            // console.log("All", result.signature);
-            // console.log(count);
-            res.render("thanks", {
-                layout: "main",
-                petitionName,
-                signature: sig.rows[0].signature,
-                count: count.rows[0].count,
-                // Number of use who signed
+app.get("/thanks", requireLoggedInUser, (req, res) => {
+    if (req.session.userId) {
+        // console.log(req.session);
+        // const user_id = req.body.userId;
+        const user_id = req.session.userId;
+        console.log("User", user_id);
+        getSigCount().then((count) => {
+            console.log(count);
+            console.log("count", count.rows[0]);
+            getSignatures(user_id).then(({ rows }) => {
+                // console.log("Rows", sig);
+                // console.log("All", result.signature);
+                console.log("1", rows);
+                res.render("thanks", {
+                    layout: "main",
+                    petitionName,
+                    signature: rows,
+                    // signature: sig.rows[0].signature,
+                    count: count.rows[0].count,
+                    // Number of use who signed
+                });
             });
         });
-    });
+    }
 });
 
 //// Move count to thanks and render all user info in signers
@@ -236,7 +255,7 @@ app.get("/thanks", requireLoggedInUser, requireSignature, (req, res) => {
 // ---- One route for rendering the signers page with handlebars;
 // -------- Make sure to get all the signature data fromn the db before
 // 4_0. Set up handlebars for app SIGNERS
-app.get("/signers", requireLoggedInUser, requireSignature, (req, res) => {
+app.get("/signers", requireLoggedInUser, (req, res) => {
     allQuery().then((info) => {
         // console.log("Info", info);
         // console.log("Info", info.rows[0]);
@@ -249,6 +268,7 @@ app.get("/signers", requireLoggedInUser, requireSignature, (req, res) => {
             lastname: info.rows[0].lastname,
             age: info.rows[0].age,
             city: info.rows[0].city,
+
             // count: signers.length,
             // signers: info.rows,
             allSigners,
@@ -270,36 +290,6 @@ app.get("/signers/:city", requireLoggedInUser, (req, res) => {
         });
     });
 });
-
-//5_0.Set up handlebars for app city info display
-
-// app.get("/cityInfo", (req, res) => {
-//     cityQuery().then((result) => {
-//         res.render("cityInfo", {
-//             layout: "main",
-//             cityInfo: result,
-//             petitionName,
-//         });
-//     });
-// });
-
-// allQuery().then((info) => {
-//     info = info.rows;
-//     console.log(info);
-//     getSupportCount().then((count) => {
-//         // console.log("ALL", result);
-//         // console.log("Signes", result.rows.length);
-//         // console.log(count.rows[0].count);
-//         res.render("signers", {
-//             layout: "main",
-//             // signers: result.rows,
-//             // count: result.rows.length,
-//             count: count.rows[0].count,
-//             petitionName,
-//             // info:
-//         });
-//     });
-// });
 
 /// DB query for all signers by city
 
@@ -344,6 +334,7 @@ app.get("/editPage", requireLoggedInUser, (req, res) => {
         // console.log("Saved Data", req.session);
         res.render("editPage", {
             layout: "main",
+            // user: rows,
             user: data.rows[0],
             // Adding prefedined values
         });

@@ -5,13 +5,29 @@
 <div class="thanks">
     <h1>Thank you for Signing this petition!{{petitionName}}</h1>
 
-    <a class="Signers" href="/signers">
+    <a class="signers" href="/signers">
         Check out who alreay signed the petition
     </a>
+    {{#signature}}
 
+        <img src="{{signature}}" alt="" />
+
+    {{/signature}}
     <img src={{signature}} alt="" />
 
     <h2>This the number of peopled who support us {{count}} </h2>
+
+    <form id="deleteSig" action="/delete" method="POST">
+        <button class="button" type="submit"> Delete Signature</button>
+    </form>
+
+    <a class="editProfil" href="/editPage">
+        <button Edit Profil></button>
+    </a>
+    <a class="signers" href="/signers">
+        <button Check Supportes></button>
+    </a>
+
 </div>
 
 {{! 1.Implement number of users later.2. Insert Thank you text.  }}
@@ -20,3 +36,6 @@
 the DB right before you call res.render for the according route
 ---- Use the function we have written before in the db.js file 
 ---- Provide the information about the count when you call res.render for the handlebarview }}
+
+{{! // Need to ad link to edit page 
+// Link to delet signature }}
