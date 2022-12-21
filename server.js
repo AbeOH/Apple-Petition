@@ -355,6 +355,11 @@ app.post("/editPage", requireLoggedInUser, (req, res) => {
     });
 });
 
+app.get("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/login");
+});
+
 //---------------------------------------------------------------------------------------------
 
 // Server Listening
