@@ -260,16 +260,17 @@ app.get("/signers", requireLoggedInUser, (req, res) => {
         // console.log("Info", info);
         // console.log("Info", info.rows[0]);
         let allSigners = info.rows;
-        // console.log("Info", info.rows[0].firstname);
+        console.log("Info", allSigners);
         res.render("signers", {
             layout: "main",
             // allSigners:
-            firstname: info.rows[0].firstname,
-            lastname: info.rows[0].lastname,
-            age: info.rows[0].age,
-            city: info.rows[0].city,
-
-            // count: signers.length,
+            // firstname: info.rows[0].firstname,
+            // lastname: info.rows[0].lastname,
+            // age: info.rows[0].age,
+            // city: info.rows[0].city,
+            // linkedIn: info.rows[0].linkedIn,
+            // count: signs.length,
+            // count: allSigners.signature.length,
             // signers: info.rows,
             allSigners,
         });

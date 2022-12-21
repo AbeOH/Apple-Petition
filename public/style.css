@@ -17,6 +17,11 @@ body {
     gap: 10px;
 }
 
+main {
+    text-align: center;
+    min-width: 100vw;
+}
+
 .topbar {
     position: fixed;
     top: 0;
@@ -113,9 +118,10 @@ body {
 } */
 
 form.petitionForm {
-    /* display: flex; */
-    display: table;
+    display: flex;
+    /* display: table; */
     align-items: center;
+    flex-direction: column;
 }
 
 div.formPetition {
@@ -146,6 +152,6 @@ canvas {
     color: black;
 }
 
-.petitionText {
+main .signer-link {
     color: black;
 }
